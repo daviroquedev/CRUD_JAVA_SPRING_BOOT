@@ -1,0 +1,1 @@
+ALTER TABLE jogo ADD COLUMN console_codigo INTEGER ARRAY;

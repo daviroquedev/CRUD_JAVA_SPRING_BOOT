@@ -1,16 +1,15 @@
 package com.jogoscrud.diamond.jogoscrud.controllers;
 
-import com.jogoscrud.diamond.jogoscrud.domain.jogo.Jogo;
-import com.jogoscrud.diamond.jogoscrud.domain.jogo.JogoRepository;
-import com.jogoscrud.diamond.jogoscrud.domain.jogo.RequestGame;
+import com.jogoscrud.diamond.jogoscrud.domain.jogo.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,6 +17,8 @@ import java.util.Optional;
 public class JogosController {
     @Autowired
     private JogoRepository repository;
+    @Autowired
+    private ConsoleRepository consoleRepository;
     @GetMapping
     public ResponseEntity getAllGamers(){
         var allGamers = repository.findAllByActiveTrue();
@@ -25,12 +26,35 @@ public class JogosController {
     }
 
     @PostMapping
-    public ResponseEntity registerGame(@RequestBody @Valid RequestGame data){
+    @Transactional
+    public ResponseEntity registerGame(@RequestBody @Valid RequestGame data) {
         Jogo newJogo = new Jogo(data);
-        System.out.println(data);
+        List <JogoConsole> jogoConsoles = new ArrayList<>();
+
+        for (Integer consoleCodigo : data.console_codigo()) {
+            Console console = consoleRepository.findById(consoleCodigo)
+                    .orElseThrow(() -> new RuntimeException("Console não encontrado com o código: " + consoleCodigo));
+
+            JogoConsole jogoConsole = new JogoConsole();
+            jogoConsole.setJogo(newJogo);
+            jogoConsole.setConsole(console);
+
+            jogoConsoles.add(jogoConsole);
+        }
+
+      //  newJogo.setConsoleCodigos(jogoConsoles);
+
         repository.save(newJogo);
         return ResponseEntity.ok().build();
     }
+
+//    @PostMapping
+//    public ResponseEntity registerGame(@RequestBody @Valid RequestGame data){
+//        Jogo newJogo = new Jogo(data);
+//        System.out.println(data);
+//        repository.save(newJogo);
+//        return ResponseEntity.ok().build();
+//    }
 
     @PutMapping
     @Transactional

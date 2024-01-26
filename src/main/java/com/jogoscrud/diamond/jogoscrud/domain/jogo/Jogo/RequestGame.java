@@ -1,4 +1,4 @@
-package com.jogoscrud.diamond.jogoscrud.domain.jogo;
+package com.jogoscrud.diamond.jogoscrud.domain.jogo.Jogo;
 
 import jakarta.validation.constraints.NotBlank;
 

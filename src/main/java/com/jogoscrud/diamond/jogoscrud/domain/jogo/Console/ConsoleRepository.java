@@ -1,4 +1,4 @@
-package com.jogoscrud.diamond.jogoscrud.domain.jogo;
+package com.jogoscrud.diamond.jogoscrud.domain.jogo.Console;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

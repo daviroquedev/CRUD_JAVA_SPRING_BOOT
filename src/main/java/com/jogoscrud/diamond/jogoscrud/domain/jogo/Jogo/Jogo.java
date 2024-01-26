@@ -1,5 +1,6 @@
-package com.jogoscrud.diamond.jogoscrud.domain.jogo;
+package com.jogoscrud.diamond.jogoscrud.domain.jogo.Jogo;
 
+import com.jogoscrud.diamond.jogoscrud.domain.jogo.JogoConsole.JogoConsole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +29,6 @@ public class Jogo {
     private String website;
 
     private Integer desenvolvedor_codigo;
-
-   // private List<Integer> console_codigo;
 
     private String genero;
 

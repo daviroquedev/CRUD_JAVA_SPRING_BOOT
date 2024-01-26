@@ -1,6 +1,9 @@
-package com.jogoscrud.diamond.jogoscrud.controllers;
+package com.jogoscrud.diamond.jogoscrud.domain.jogo.Jogo;
 
-import com.jogoscrud.diamond.jogoscrud.domain.jogo.*;
+import com.jogoscrud.diamond.jogoscrud.domain.jogo.Console.Console;
+import com.jogoscrud.diamond.jogoscrud.domain.jogo.Console.ConsoleRepository;
+import com.jogoscrud.diamond.jogoscrud.domain.jogo.JogoConsole.JogoConsole;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +78,7 @@ public class JogosController {
 
         }else {
             System.out.println("NÃO ENCONTROU O ID");
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException();
         }
 
         return null;
@@ -95,11 +98,18 @@ public class JogosController {
             jogo.setActive(false);
         }else {
             System.out.println("NÃO ENCONTROU O ID");
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException();
         }
 
 
         return null;
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Jogo>> searchJogosByNome(@RequestParam String name) {
+        List<Jogo> jogos = repository.findByNameContainingIgnoreCase(name);
+        return ResponseEntity.ok(jogos);
+    }
+
 
 }

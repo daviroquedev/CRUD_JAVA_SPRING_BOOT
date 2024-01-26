@@ -1,5 +1,7 @@
-package com.jogoscrud.diamond.jogoscrud.domain.jogo;
+package com.jogoscrud.diamond.jogoscrud.domain.jogo.JogoConsole;
 
+import com.jogoscrud.diamond.jogoscrud.domain.jogo.Jogo.Jogo;
+import com.jogoscrud.diamond.jogoscrud.domain.jogo.Console.Console;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,5 +28,4 @@ public class JogoConsole {
     @JoinColumn(name = "console_codigo")
     private Console console;
 
-    // construtores, getters, setters
 }

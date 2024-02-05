@@ -1,115 +1,54 @@
 package com.jogoscrud.diamond.jogoscrud.domain.jogo.Jogo;
 
-import com.jogoscrud.diamond.jogoscrud.domain.jogo.Console.Console;
-import com.jogoscrud.diamond.jogoscrud.domain.jogo.Console.ConsoleRepository;
-import com.jogoscrud.diamond.jogoscrud.domain.jogo.JogoConsole.JogoConsole;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/jogos")
+@RequiredArgsConstructor
 public class JogosController {
-    @Autowired
-    private JogoRepository repository;
-    @Autowired
-    private ConsoleRepository consoleRepository;
+
+
+    private final JogoService jogoService;
+
     @GetMapping
-    public ResponseEntity getAllGamers(){
-        var allGamers = repository.findAllByActiveTrue();
-        return ResponseEntity.ok(allGamers);
+    public ResponseEntity<List<JogoDTO>> getAllGames() {
+        List<JogoDTO> allGames = jogoService.getAllGames();
+        return ResponseEntity.ok(allGames);
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity registerGame(@RequestBody @Valid RequestGame data) {
-        Jogo newJogo = new Jogo(data);
-        List <JogoConsole> jogoConsoles = new ArrayList<>();
+    public ResponseEntity<JogoDTO> registerGame(@RequestBody @Valid JogoDTO jogoDTO) {
+        jogoService.registerGame(jogoDTO);
+        System.out.println("JOGO DTO"+jogoDTO);
 
-        for (Integer consoleCodigo : data.console_codigo()) {
-            Console console = consoleRepository.findById(consoleCodigo)
-                    .orElseThrow(() -> new RuntimeException("Console não encontrado com o código: " + consoleCodigo));
-
-            JogoConsole jogoConsole = new JogoConsole();
-            jogoConsole.setJogo(newJogo);
-            jogoConsole.setConsole(console);
-
-            jogoConsoles.add(jogoConsole);
-        }
-
-      //  newJogo.setConsoleCodigos(jogoConsoles);
-
-        repository.save(newJogo);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @PostMapping
-//    public ResponseEntity registerGame(@RequestBody @Valid RequestGame data){
-//        Jogo newJogo = new Jogo(data);
-//        System.out.println(data);
-//        repository.save(newJogo);
-//        return ResponseEntity.ok().build();
-//    }
-
-    @PutMapping
+    @PutMapping("/{id}")
     @Transactional
-    public  ResponseEntity updateGame(@RequestBody @Valid RequestGame data){
-        System.out.println(data);
-        Optional<Jogo> optionalJogo = repository.findById(data.id());
-
-        if(optionalJogo.isPresent()) {
-            System.out.println("optional OK OK OOKOK OKOKOK");
-            Jogo jogo = optionalJogo.get();
-            jogo.setName(data.name());
-            jogo.setDescricao(data.descricao());
-            jogo.setGenero(data.genero());
-            jogo.setWebsite(data.website());
-            jogo.setDataLancamento(Date.valueOf(data.dataLancamento()));
-            jogo.setDesenvolvedor_codigo(data.desenvolvedor_codigo());
-
-
-        }else {
-            System.out.println("NÃO ENCONTROU O ID");
-            throw new EntityNotFoundException();
-        }
-
-        return null;
+    public ResponseEntity<Void> updateGame(@PathVariable Long id, @RequestBody @Valid JogoDTO jogoDTO) {
+        jogoService.updateGame(id, jogoDTO);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deleteGame(@PathVariable Long id){
-
-//        repository.deleteById(id);
-//        return ResponseEntity.noContent().build();
-
-        Optional<Jogo> optionalJogo = repository.findById(id);
-        if(optionalJogo.isPresent()) {
-            System.out.println("optional OK OK OOKOK OKOKOK");
-            Jogo jogo = optionalJogo.get();
-            jogo.setActive(false);
-        }else {
-            System.out.println("NÃO ENCONTROU O ID");
-            throw new EntityNotFoundException();
-        }
-
-
-        return null;
+    public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
+        jogoService.deleteGame(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Jogo>> searchJogosByNome(@RequestParam String name) {
-        List<Jogo> jogos = repository.findByNameContainingIgnoreCase(name);
-        return ResponseEntity.ok(jogos);
+    public ResponseEntity<List<JogoDTO>> searchGamesByName(@RequestParam String name) {
+        List<JogoDTO> games = jogoService.searchGamesByName(name);
+        return ResponseEntity.ok(games);
     }
-
-
 }

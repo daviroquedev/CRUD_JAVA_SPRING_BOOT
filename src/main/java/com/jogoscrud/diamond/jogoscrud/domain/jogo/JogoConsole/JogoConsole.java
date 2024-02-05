@@ -28,4 +28,6 @@ public class JogoConsole {
     @JoinColumn(name = "console_codigo")
     private Console console;
 
+    public void setConsole(Integer consoleCodigo) {
+    }
 }

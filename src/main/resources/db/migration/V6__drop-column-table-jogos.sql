@@ -1,0 +1,1 @@
+ALTER TABLE jogo DROP COLUMN console_codigo;

@@ -9,6 +9,7 @@ import java.sql.Date;
 @Entity(name = "console")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "codigo")
@@ -29,5 +30,8 @@ public class Console {
         this.dataLancamento = dataLancamento;
         this.empresa = empresa;
 
+    }
+
+    public Console(String nome, String s, String empresa) {
     }
 }

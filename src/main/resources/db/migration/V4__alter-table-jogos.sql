@@ -1,0 +1,3 @@
+ALTER TABLE jogo DROP CONSTRAINT chk_genero;
+
+ALTER TABLE jogo ADD CONSTRAINT chk_genero CHECK (genero IN ('FPS', 'MMORPG', 'LUTA', 'AVENTURA'));
